@@ -32,8 +32,8 @@ public class MyService implements KVService {
         return id;
     }
 
-    public MyService(int port,@NotNull final MyDAO dao) throws IOException {
-        this.server = HttpServer.create(new InetSocketAddress(port),0);
+    public MyService(int port, @NotNull final MyDAO dao) throws IOException {
+        this.server = HttpServer.create(new InetSocketAddress(port), 0);
 
 
         this.server.createContext("/v0/status", new HttpHandler() {
@@ -65,11 +65,11 @@ public class MyService implements KVService {
                     case "PUT":
                         final int contentlength = Integer.valueOf(httpExchange.getRequestHeaders().getFirst("Content-length"));
                         final byte[] putValue = new byte[contentlength];
-                        if ((httpExchange.getRequestBody().read(putValue) != (putValue.length )) && (contentlength != 0)) {
+                        if ((httpExchange.getRequestBody().read(putValue) != (putValue.length)) && (contentlength != 0)) {
                             throw new IOException("Can`t read at once");
                         }
 
-                        dao.upsert(id,putValue);
+                        dao.upsert(id, putValue);
                         httpExchange.sendResponseHeaders(201, 0);
                         break;
 

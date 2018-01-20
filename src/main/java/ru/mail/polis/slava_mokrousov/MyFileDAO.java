@@ -8,7 +8,7 @@ import java.util.NoSuchElementException;
 /**
  * Created by Slava on 17.01.2018.
  */
-public class MyFileDAO implements MyDAO{
+public class MyFileDAO implements MyDAO {
     @NotNull
     private final File dir;
 
@@ -29,7 +29,7 @@ public class MyFileDAO implements MyDAO{
             throw new NoSuchElementException();
         }
         final byte[] value = new byte[(int) file.length()];
-        try(InputStream is = new FileInputStream(file)) {
+        try (InputStream is = new FileInputStream(file)) {
             if (is.read(value) != value.length) {
                 throw new IOException("Can`t read file in one go");
             }
@@ -39,12 +39,11 @@ public class MyFileDAO implements MyDAO{
 
     @Override
     public void upsert(@NotNull final String key, @NotNull final byte[] value) throws IllegalArgumentException, IOException {
-        try (OutputStream os = new FileOutputStream(getFile(key))){
+        try (OutputStream os = new FileOutputStream(getFile(key))) {
             os.write(value);
         }
     }
 
-    @NotNull
     @Override
     public void delete(@NotNull final String key) throws IllegalArgumentException, IOException {
         //noinspection ResultOfMethodCallIgnored
