@@ -6,7 +6,9 @@ import com.sun.net.httpserver.HttpServer;
 import org.jetbrains.annotations.NotNull;
 import ru.mail.polis.KVService;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.util.NoSuchElementException;
 
@@ -63,13 +65,13 @@ public class MyService implements KVService {
                         httpExchange.sendResponseHeaders(202, 0);
                         break;
                     case "PUT":
-                        final int contentlength = Integer.valueOf(httpExchange.getRequestHeaders().getFirst("Content-length"));
-                        final byte[] putValue = new byte[contentlength];
-                        if ((httpExchange.getRequestBody().read(putValue) != (putValue.length)) && (contentlength != 0)) {
-                            throw new IOException("Can`t read at once");
+                        InputStream in = httpExchange.getRequestBody();
+                        ByteArrayOutputStream out = new ByteArrayOutputStream();
+                        byte buf[] = new byte[4096];
+                        for (int n = in.read(buf); n > 0; n = in.read(buf)) {
+                            out.write(buf, 0, n);
                         }
-
-                        dao.upsert(id, putValue);
+                        dao.upsert(id, out.toByteArray());
                         httpExchange.sendResponseHeaders(201, 0);
                         break;
 
